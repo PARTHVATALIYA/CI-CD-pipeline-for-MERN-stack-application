@@ -1,0 +1,67 @@
+<----Install java----->
+sudo apt-get install openjdk-11-jdk
+
+
+<----Jenkins setup---->
+
+sudo apt update
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+sudo ufw allow 8080
+sudo ufw allow OpenSSH
+sudo ufw enable
+sudo ufw status
+
+add custom TCP port 8080 in security group
+now, open http://[your_public_ip_address]:8080
+cat /var/lib/jenkins/secrets/initialAdminPassword --> copy that key and paste it to the jenkins server and download require depedecies
+and create an account on jenkins and start work on it.
+
+
+<----install ngnix---->
+sudo apt update
+sudo apt install nginx
+sudo ufw app list
+sudo ufw allow 'Nginx HTTP'
+sudo ufw status
+systemctl status nginx
+now, type in your browser http://[your_public_ip_address]
+
+<----install nodejs---->
+sudo apt update
+curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+sudo apt -y install nodejs
+node  -v
+
+npm install -g pm2
+npm install -g serve
+
+<----install mongoDB---->
+wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install -y mongodb-org
+echo "mongodb-org hold" | sudo dpkg --set-selections
+echo "mongodb-org-database hold" | sudo dpkg --set-selections
+echo "mongodb-org-server hold" | sudo dpkg --set-selections
+echo "mongodb-org-shell hold" | sudo dpkg --set-selections
+echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+echo "mongodb-org-tools hold" | sudo dpkg --set-selections
+sudo systemctl start mongod
+sudo systemctl status mongod
+sudo vim /etc/mongod.conf -->change file
+					net:
+    					port: 27017
+				    	bindIp: 0.0.0.0
+sudo systemctl restart mongod
+
+add all TCP port in security group
+
+now, open mongoDB compass and try to connect with URI mongodb://[your_public_ip_address]:27017
+
+
